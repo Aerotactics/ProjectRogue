@@ -11,6 +11,7 @@ UDiceBag::~UDiceBag()
 {
 }
 
+// Rolls a list of dice and returns the total
 int32 UDiceBag::Roll(const TArray<int32>& Faces)
 {
     int32 Total = 0;
@@ -29,6 +30,7 @@ int32 UDiceBag::Roll(const TArray<int32>& Faces)
     return Total;
 }
 
+// Rolls a number of a specific die and returns the total
 int32 UDiceBag::Roll(int32 NumOfDice, int32 Face)
 {
     TArray<int32> Dice;

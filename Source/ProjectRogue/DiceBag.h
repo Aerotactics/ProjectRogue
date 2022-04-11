@@ -6,7 +6,8 @@
 #include "DiceBag.generated.h"
 
 /**
- * A generic dice-roller
+ * A static dice-rolling class
+ * by Michael McCluskey and Thomas Jensen
  */
  UCLASS(Blueprintable)
 class PROJECTROGUE_API UDiceBag : public UObject
