@@ -6,8 +6,7 @@
 #include "DiceBag.generated.h"
 
 /**
- * A generic dice-rolling structure that contains previous
-    rolls, total of previous rolls, and a list of dice to roll
+ * A generic dice-roller
  */
  UCLASS(Blueprintable)
 class PROJECTROGUE_API UDiceBag : public UObject

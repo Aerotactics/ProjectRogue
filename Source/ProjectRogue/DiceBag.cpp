@@ -24,7 +24,7 @@ int32 UDiceBag::Roll(const TArray<int32>& Faces)
             continue;
         }
 
-        Total += FMath::RandRange(1, Faces[i]);;
+        Total += FMath::RandRange(1, Faces[i]);
     }
     return Total;
 }
