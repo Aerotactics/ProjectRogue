@@ -21,10 +21,8 @@ public:
 	~UArmor();
 
 	virtual void OnUse(UAdventurer* Adventurer, int32 InventoryIndex) override;
-
-	void SetFixedProtection(int32 Amount) { FixedProtection = Amount; }
 	
-	// M: Returns a random protection roll, or FixedProtection.
+	// M: Returns a random protection roll
 	//	VALUE CAN CHANGE EVERY CALL
 	int32 GetProtection();
 

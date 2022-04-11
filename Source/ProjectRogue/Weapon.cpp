@@ -6,8 +6,7 @@
 #include "Adventurer.h"
 
 UWeapon::UWeapon()
-	: FixedDamage(0)
-	, Range(100) // default range is 100 for melee weapons
+	: Range(100) // default range is 100 for melee weapons
 {
 	SetType(EItemType::Weapon);
 }
@@ -23,7 +22,5 @@ void UWeapon::OnUse(UAdventurer* Adventurer, int32 InventoryIndex)
 
 int32 UWeapon::GetDamage()
 {
-	if(FixedDamage != 0)
-		return FixedDamage;
-	return GetDiceBag()->Roll();
+	return UDiceBag::Roll(DiceFaces);
 }

@@ -39,8 +39,8 @@ private:
     EItemType Type;
     EItemType SubType;
 
-    UPROPERTY()
-    UDiceBag* DiceBag;
+protected:
+    TArray<int32> DiceFaces;
 
 public:
 	UItem();
@@ -54,8 +54,6 @@ public:
     const FText& GetDescription() const { return Description; }
     const FText& GetItemName() const { return Name; }
     float GetValue() const { return Value; }
-    //T: this cant be 'const UDiceBag*' because Roll cant be called
-    UDiceBag* GetDiceBag() const { return DiceBag; }
     EItemType GetType() const { return Type; }
     EItemType GetSubType() const { return SubType; }
 
