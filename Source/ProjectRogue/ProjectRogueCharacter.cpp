@@ -1108,9 +1108,7 @@ void AProjectRogueCharacter::CreateAllItems()
 		Adventurer->DropItem(ClickedSlot.InventoryIndex);
 	});
 
-	UWeapon* Staff = AItemManager::AddItem<UWeapon>("Staff", 2, "Equip to attack for 1 damage.");
-	Staff->SetFixedDamage(1);
-
+	AItemManager::AddItem<UWeapon>("Staff", 2, "Equip to attack for 1 damage.", { 1 });
 	AItemManager::AddItem<UWeapon>("Dagger", 4, "Equip to attack for 1d2 damage.", { 2 });
 	AItemManager::AddItem<UWeapon>("Club", 6, "Equip to attack for 1d3 damage.", { 3 });
 	AItemManager::AddItem<UWeapon>("Axe", 8, "Equip to attack for 1d4 damage.", { 4 });
@@ -1123,9 +1121,7 @@ void AProjectRogueCharacter::CreateAllItems()
 
 	UAmmo* Arrow = AItemManager::AddItem<UAmmo>("Arrow", 0.25, "Shot by a Bow.");
 
-	UArmor* Robes = AItemManager::AddItem<UArmor>("Robes", 6, "Equip to decrease damage by 1.");
-	Robes->SetFixedProtection(1);
-
+	AItemManager::AddItem<UArmor>("Robes", 6, "Equip to decrease damage by 1.", { 1 });
 	AItemManager::AddItem<UArmor>("Leather Armor", 12, "Equip to decrease damage by 1d3.", { 3 });
 	AItemManager::AddItem<UArmor>("Chainmail Armor", 36, "Equip to decrease damage by 1d6.", { 6 });
 	AItemManager::AddItem<UArmor>("Platemail Armor", 60, "Equip to decrease damage by 1d12.", { 12 });
