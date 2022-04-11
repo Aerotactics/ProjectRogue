@@ -11,43 +11,27 @@ UDiceBag::~UDiceBag()
 {
 }
 
-int32 UDiceBag::Roll()
+int32 UDiceBag::Roll(const TArray<int32>& Faces)
 {
-    Rolled.Empty();
-    Total = 0;
-
+    int32 Total = 0;
     for (int32 i = 0; i < Faces.Num(); ++i)
     {
-        // M: Rolls of 0 or 1 faces results in 0
-        if (Faces[i] < 2)
+        check(Faces[i] > 0);
+
+        if (Faces[i] == 1)
         {
-            Rolled.Add(0);
+            Total += 1;
             continue;
         }
 
-        int32 Roll = FMath::RandRange(1, Faces[i]);
-        Rolled.Add(Roll);
-        Total += Roll;
+        Total += FMath::RandRange(1, Faces[i]);;
     }
     return Total;
 }
 
-void UDiceBag::SetDice(const TArray<int32>& ListOfFaces)
+int32 UDiceBag::Roll(int32 NumOfDice, int32 Face)
 {
-    if(ListOfFaces.Num() != 0)
-        Faces = ListOfFaces;
-}
-
-void UDiceBag::AddDice(const TArray<int32>& ListOfFaces)
-{
-    Faces.Append(ListOfFaces);
-}
-
-void UDiceBag::Clear()
-{
-    if (Faces.Num() > 0)
-    {
-        Faces.Empty();
-        Rolled.Empty();
-    }
+    TArray<int32> Dice;
+    Dice.Init(Face, NumOfDice);
+    return Roll(Dice);
 }

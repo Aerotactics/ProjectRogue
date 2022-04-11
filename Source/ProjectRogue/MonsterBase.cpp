@@ -50,8 +50,7 @@ void AMonsterBase::BeginPlay()
 	TArray<int32> HealthDice;
 	HealthDice.Init(HealthDieFaces, HealthDiceRolled);
 	DiceBag->SetDice(HealthDice);
-	DiceBag->Roll();
-	EnemyData->IncreaseMaxHealth(DiceBag->GetTotal());
+	EnemyData->IncreaseMaxHealth(DiceBag->Roll());
 	HealthbarWidget->Update(EnemyData->GetCurrentHealth(), EnemyData->GetMaxHealth());
 	HideHealthbar();
 
