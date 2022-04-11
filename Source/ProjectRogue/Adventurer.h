@@ -136,7 +136,7 @@ public:
 	bool UseItem(const int32 InventoryIndex);
 
 private:
-	int32 RollManaIncrease(const TMap<ECombatDataType, FCombatDice>& Data, ECombatDataType DataType, UDiceBag* DiceBag);
+	int32 RollManaIncrease(const TMap<ECombatDataType, FCombatDice>& Data, ECombatDataType DataType);
 	void SetPartyController(UPartyController* InPartyController) { PartyController = InPartyController; }
 	const TMap<ECombatDataType, FCombatDice>& GetCombatData(ERace InRace);
 	const TMap<ECombatDataType, FCombatDice>& GetCombatData(EClass InClass);

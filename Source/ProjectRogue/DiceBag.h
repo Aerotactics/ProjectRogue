@@ -18,5 +18,5 @@ public:
     ~UDiceBag();
 
     static int32 Roll(const TArray<int32>& Faces);
-    static int32 Roll(int NumberOfDice, int Face);
+    static int32 Roll(int32 NumberOfDice, int32 Face);
 };

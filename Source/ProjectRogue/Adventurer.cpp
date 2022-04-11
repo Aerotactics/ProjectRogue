@@ -104,17 +104,14 @@ void UAdventurer::AddAllowedEquipment(const FString& InName)
 void UAdventurer::RandomizeStats()
 {
     // Stats
-    UDiceBag* DiceBag = NewObject<UDiceBag>();
-    DiceBag->SetDice({6, 6, 6});
     for (auto& Stat : Stats)
     {
         // We will ALWAYS roll 3D6 for stats
-        Stat.Value = DiceBag->Roll();
+        Stat.Value = UDiceBag::Roll(3, 6);
     }
 
     // Combat Data
     auto& Data = GetCombatData(Race);
-    DiceBag->Clear();
 
     if (Data.Num() == 0)
     {
@@ -126,11 +123,8 @@ void UAdventurer::RandomizeStats()
 
     //T: get the specific dice to roll for each combat stat
     auto& HealthDice = *Data.Find(ECombatDataType::HitPoints);
-    TArray<int32> Dice;
-    Dice.Init(HealthDice.DieFaces, HealthDice.DiceThrown);
-    DiceBag->SetDice(Dice); 
 
-    MaxHealth = DiceBag->Roll() + GetStatModifier(EStat::Constitution);
+    MaxHealth = UDiceBag::Roll(HealthDice.DiceThrown, HealthDice.DieFaces) + GetStatModifier(EStat::Constitution);
     if (MaxHealth < 1)
         MaxHealth = 1;
     CurrentHealth = MaxHealth;
@@ -139,9 +133,7 @@ void UAdventurer::RandomizeStats()
     TentativePrayerPoints = RollManaPoints(ECombatDataType::PrayerPoints, EStat::Wisdom);
     
     // Gold
-    DiceBag->Clear();
-    DiceBag->SetDice({4});
-    Gold = DiceBag->Roll();
+    Gold = UDiceBag::Roll({4});
 
     Update(Name, Race, Class, Icon);
 }
@@ -211,13 +203,8 @@ int32 UAdventurer::RollManaPoints(ECombatDataType ManaType, EStat Stat)
 {
     auto& Data = GetCombatData(Race);
     auto& ManaDice = *Data.Find(ManaType);
-    UDiceBag* DiceBag = NewObject<UDiceBag>();
     
-    TArray<int32> Dice;
-    Dice.Init(ManaDice.DieFaces, ManaDice.DiceThrown);
-    DiceBag->SetDice(Dice);
-    
-    int32 Mana = DiceBag->Roll() + GetStatModifier(Stat);
+    int32 Mana = UDiceBag::Roll(ManaDice.DiceThrown, ManaDice.DieFaces) + GetStatModifier(Stat);
     if (Mana < 1)
         Mana = 1;
 
@@ -251,17 +238,15 @@ bool UAdventurer::LevelUp()
     {
         AddLevel();
         auto& Data = GetCombatData(Class);
-        UDiceBag* DiceBag = NewObject<UDiceBag>();
-        TArray<int32> Dice;
         int32 ManaIncrease = 0;
         if (Class == EClass::Magician)
         {
-            ManaIncrease = RollManaIncrease(Data, ECombatDataType::SpellPoints, DiceBag);
+            ManaIncrease = RollManaIncrease(Data, ECombatDataType::SpellPoints);
 
         }
         else if (Class == EClass::Cleric)
         {
-            ManaIncrease = RollManaIncrease(Data, ECombatDataType::PrayerPoints, DiceBag);
+            ManaIncrease = RollManaIncrease(Data, ECombatDataType::PrayerPoints);
         }
 
         if (ManaIncrease < 0)
@@ -269,9 +254,7 @@ bool UAdventurer::LevelUp()
         IncreaseMaxMana(ManaIncrease);
 
         auto HealthDice = *Data.Find(ECombatDataType::HitPoints);
-        Dice.Init(HealthDice.DieFaces, HealthDice.DiceThrown);
-        DiceBag->SetDice(Dice);
-        int32 HealthIncrease = DiceBag->Roll() + GetStatModifier(EStat::Constitution);
+        int32 HealthIncrease = UDiceBag::Roll(HealthDice.DiceThrown, HealthDice.DieFaces) + GetStatModifier(EStat::Constitution);
         if (HealthIncrease < 0)
             HealthIncrease = 0;
         IncreaseMaxHealth(HealthIncrease);
@@ -280,18 +263,15 @@ bool UAdventurer::LevelUp()
     return CanLevelUp();
 }
 
-int32 UAdventurer::RollManaIncrease(const TMap<ECombatDataType, FCombatDice>& Data, ECombatDataType DataType, UDiceBag* DiceBag)
+int32 UAdventurer::RollManaIncrease(const TMap<ECombatDataType, FCombatDice>& Data, ECombatDataType DataType)
 {
-    TArray<int32> Dice;
     auto& ManaDice = *Data.Find(DataType);
-    Dice.Init(ManaDice.DieFaces, ManaDice.DiceThrown);
-    DiceBag->SetDice(Dice);
     if (DataType == ECombatDataType::SpellPoints)
     {
-        return DiceBag->Roll() + GetStatModifier(EStat::Intelligence);
+        return UDiceBag::Roll(ManaDice.DiceThrown, ManaDice.DieFaces) + GetStatModifier(EStat::Intelligence);
     }
     else
     {
-        return DiceBag->Roll() + GetStatModifier(EStat::Wisdom);
+        return UDiceBag::Roll(ManaDice.DiceThrown, ManaDice.DieFaces) + GetStatModifier(EStat::Wisdom);
     }
 }
