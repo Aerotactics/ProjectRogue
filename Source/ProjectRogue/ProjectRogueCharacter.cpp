@@ -1212,7 +1212,12 @@ void AProjectRogueCharacter::CreateAllItems()
 	UConsumable* HealingPotion = AItemManager::AddItem<UConsumable>("Healing Potion", 0, "Restore 4d6 Health points.", {6, 6, 6, 6});
 	HealingPotion->SetSubType(EItemType::Potion);
 	HealingPotion->SetUseFunction([&](UAdventurer* Adventurer) {
-		Adventurer->RestoreHealth(AItemManager::GetItem("Healing Potion")->GetDiceBag()->Roll());
+		if (Adventurer->GetCurrentHealth() == 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s health is 0, cannot use healing potion"), *Adventurer->GetCharacterName().ToString());
+			return;
+		}
+		Adventurer->RestoreHealth(UDiceBag::Roll(4, 6));
 		Adventurer->DropItem(ClickedSlot.InventoryIndex);
 		GEngine->AddOnScreenDebugMessage(2, 2, FColor::Green, "Health Points Restored!");
 	});
@@ -1220,9 +1225,14 @@ void AProjectRogueCharacter::CreateAllItems()
 	UConsumable* ManaPotion = AItemManager::AddItem<UConsumable>("Mana Potion", 0, "Restore 4d6 Spell points.", { 6, 6, 6, 6 });
 	ManaPotion->SetSubType(EItemType::Potion);
 	ManaPotion->SetUseFunction([&](UAdventurer* Adventurer) {
+		if (Adventurer->GetCurrentHealth() == 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s health is 0, cannot use mana potion"), *Adventurer->GetCharacterName().ToString());
+			return;
+		}
 		if (Adventurer->GetClass() == EClass::Magician)
 		{
-			Adventurer->RestoreMana(AItemManager::GetItem("Mana Potion")->GetDiceBag()->Roll());
+			Adventurer->RestoreMana(UDiceBag::Roll(4, 6));
 			Adventurer->DropItem(ClickedSlot.InventoryIndex);
 			GEngine->AddOnScreenDebugMessage(2, 2, FColor::Green, "Spell Points Restored!");
 		}
@@ -1235,9 +1245,14 @@ void AProjectRogueCharacter::CreateAllItems()
 	UConsumable* HolyWater = AItemManager::AddItem<UConsumable>("Holy Water", 0, "Restore 4d6 Prayer points.", { 6, 6, 6, 6 });
 	HealingPotion->SetSubType(EItemType::Potion);
 	HolyWater->SetUseFunction([&](UAdventurer* Adventurer) {
+		if (Adventurer->GetCurrentHealth() == 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s health is 0, cannot use holy water"), *Adventurer->GetCharacterName().ToString());
+			return;
+		}
 		if (Adventurer->GetClass() == EClass::Cleric)
 		{
-			Adventurer->RestoreMana(AItemManager::GetItem("Holy Water")->GetDiceBag()->Roll());
+			Adventurer->RestoreMana(UDiceBag::Roll(4, 6));
 			Adventurer->DropItem(ClickedSlot.InventoryIndex);
 			GEngine->AddOnScreenDebugMessage(2, 2, FColor::Green, "Prayer Points Restored!");
 		}
@@ -1297,9 +1312,7 @@ void AProjectRogueCharacter::CreateAllSpells()
 			if (Character->GetCurrentHealth() == 0)
 				return false;
 
-			UDiceBag* DiceBag = NewObject<UDiceBag>();
-			DiceBag->AddDice({ 4 });
-			Character->OnTakeDamage(DiceBag->Roll());
+			Character->OnTakeDamage(UDiceBag::Roll(1, 4));
 			return true;
 		});
 	Fireball->Init(this, ESpellType::Spell, ETargetType::Single, 2, 2, 2, "Fireball", "Damage one enemy for 1d8.",
@@ -1308,9 +1321,7 @@ void AProjectRogueCharacter::CreateAllSpells()
 			if (Character->GetCurrentHealth() == 0)
 				return false;
 
-			UDiceBag* DiceBag = NewObject<UDiceBag>();
-			DiceBag->AddDice({ 8 });
-			Character->OnTakeDamage(DiceBag->Roll());
+			Character->OnTakeDamage(UDiceBag::Roll(1, 8));
 			return true;
 		});
 	LightningBolt->Init(this, ESpellType::Spell, ETargetType::Single, 3, 3, 3, "LightningBolt", "Damage one enemy for 1d12.",
@@ -1319,20 +1330,17 @@ void AProjectRogueCharacter::CreateAllSpells()
 			if (Character->GetCurrentHealth() == 0)
 				return false;
 
-			UDiceBag* DiceBag = NewObject<UDiceBag>();
-			DiceBag->AddDice({ 12 });
-			Character->OnTakeDamage(DiceBag->Roll());
+			Character->OnTakeDamage(UDiceBag::Roll(1, 12));
 			return true;
 		});
 	RagingInferno->Init(this, ESpellType::Spell, ETargetType::Area, 4, 4, 3, "RagingInferno", "Damage all enemies for 1d8.",
 		[this, pWorld](UCharacterData* Character)
 		{
-			if (Character->GetCurrentHealth() == 0)
-				return false;
+			//character is nullptr because this is an area spell, so we dont do a health check
+			//if (Character->GetCurrentHealth() == 0)
+			//	return false;
 
-			UDiceBag* DiceBag = NewObject<UDiceBag>();
-			DiceBag->AddDice({ 8 });
-			Character->OnTakeDamage(DiceBag->Roll());
+			//Character->OnTakeDamage(UDiceBag::Roll(1, 8));
 			//T: Character is the unit in front of us, so we have to get all enemies
 			//within a 3 tile radius, which can be done with a box trace by visibility channel
 			//we use visibility so we dont hit enemies around corners
@@ -1348,7 +1356,7 @@ void AProjectRogueCharacter::CreateAllSpells()
 				AMonsterBase* Monster = Cast<AMonsterBase>(Result.Actor);
 				if (Monster)
 				{
-					Monster->TakeDamage(DiceBag->Roll(), FDamageEvent(), nullptr, this);
+					Monster->TakeDamage(UDiceBag::Roll(1, 8), FDamageEvent(), nullptr, this);
 				}
 			}
 			return true;
@@ -1372,9 +1380,7 @@ void AProjectRogueCharacter::CreateAllSpells()
 			if (Character->GetCurrentHealth() == 0)
 				return false;
 
-			UDiceBag* DiceBag = NewObject<UDiceBag>();
-			DiceBag->AddDice({ 4 });
-			Character->RestoreHealth(DiceBag->Roll());
+			Character->RestoreHealth(UDiceBag::Roll(1, 4));
 			return true;
 		});
 	Heal->Init(this, ESpellType::Prayer, ETargetType::Single, 2, 2, 0, "Heal", "Heal one living hero for 4d4.",
@@ -1383,9 +1389,7 @@ void AProjectRogueCharacter::CreateAllSpells()
 			if (Character->GetCurrentHealth() == 0)
 				return false;
 
-			UDiceBag* DiceBag = NewObject<UDiceBag>();
-			DiceBag->AddDice({ 4, 4, 4, 4 });
-			Character->RestoreHealth(DiceBag->Roll());
+			Character->RestoreHealth(UDiceBag::Roll(4, 4));
 			return true;
 		});
 	Restore->Init(this, ESpellType::Prayer, ETargetType::Single, 3, 3, 0, "Restore", "Heal all hit points for one living hero.",

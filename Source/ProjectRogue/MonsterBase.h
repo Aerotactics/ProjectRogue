@@ -43,8 +43,6 @@ class PROJECTROGUE_API AMonsterBase : public ADriver
 protected:
 	UPROPERTY()
 	UCharacterData* EnemyData;
-	UPROPERTY()
-	UDiceBag* DiceBag;
 	FTimerHandle MovementTimer;
 	FTimerDelegate MovementDelegate;
 

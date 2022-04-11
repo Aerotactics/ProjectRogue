@@ -46,11 +46,7 @@ void AMonsterBase::BeginPlay()
 	EnemyData = NewObject<UCharacterData>(this);
 	EnemyData->AdjustXP(Experience);
 	EnemyData->RenameCharacter(Name);
-	DiceBag = NewObject<UDiceBag>();
-	TArray<int32> HealthDice;
-	HealthDice.Init(HealthDieFaces, HealthDiceRolled);
-	DiceBag->SetDice(HealthDice);
-	EnemyData->IncreaseMaxHealth(DiceBag->Roll());
+	EnemyData->IncreaseMaxHealth(UDiceBag::Roll(HealthDiceRolled, HealthDieFaces));
 	HealthbarWidget->Update(EnemyData->GetCurrentHealth(), EnemyData->GetMaxHealth());
 	HideHealthbar();
 
@@ -374,16 +370,13 @@ void AMonsterBase::Attack()
 		const TArray<UAdventurer*>& Party = Player->GetParty();
 		size_t PartySize = Party.Num();
 		int32 Damage = 0;
-		TArray<int32> DamageDice;
-		DamageDice.Init(DamageDieFaces, DamageDiceRolled);
-		DiceBag->SetDice(DamageDice);
 		if (DamageDieFaces == 1)
 		{
 			Damage = 1;
 		}
 		else
 		{
-			Damage = DiceBag->Roll();
+			Damage = UDiceBag::Roll(DamageDiceRolled, DamageDieFaces);
 		}
 
 		if (PartySize == 1)

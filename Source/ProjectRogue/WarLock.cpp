@@ -43,10 +43,6 @@ void AWarLock::Init()
     NextTeleportHp = EnemyData->GetCurrentHealth() - TeleportThreshold;
     NextSpawnMinionHp = EnemyData->GetCurrentHealth() - SpawnMinionThreshold;
 
-    TArray<int32> DamageDice;
-    DamageDice.Init(DamageDieFaces, DamageDiceRolled);
-    DiceBag->SetDice(DamageDice);
-
     FCollisionShape Cube = FCollisionShape::MakeBox(FVector{100,100,100});
     TArray<FHitResult> OutResults;
     FCollisionQueryParams TraceParams;
@@ -130,7 +126,7 @@ void AWarLock::Fire()
 {
     if (CurrentFireBall)
     {
-        CurrentFireBall->FireAt(FireBallTarget, DiceBag->Roll());
+        CurrentFireBall->FireAt(FireBallTarget, UDiceBag::Roll(DamageDiceRolled, DamageDieFaces));
         CurrentFireBall = nullptr;
 
         GetWorld()->GetTimerManager().SetTimer(FireballTimer, [this] {bOnCoolDown = false; }, 1, false, CoolDown);
