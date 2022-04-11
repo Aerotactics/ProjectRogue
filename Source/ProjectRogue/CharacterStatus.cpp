@@ -84,10 +84,10 @@ void UCharacterStatus::UpdateStatus(UAdventurer* InAdventurer, EContext Context)
     }
     switch (Context)
     {
-        case EContext::Tavern: ContextSensitiveText->SetText(FText::FromString("[ [O]rder ]")); break;
-        case EContext::Shop: ContextSensitiveText->SetText(FText::FromString("[ [B]uy ]")); break;
-        case EContext::Review: ContextSensitiveText->SetText(FText::FromString("[ [R]eview ]")); break;
-        case EContext::Loot: ContextSensitiveText->SetText(FText::FromString("[ [L]oot ]")); break;
+        case EContext::Tavern: ContextSensitiveText->SetText(FText::FromString("[ Order ]")); break;
+        case EContext::Shop: ContextSensitiveText->SetText(FText::FromString("[ Buy ]")); break;
+        case EContext::Review: ContextSensitiveText->SetText(FText::FromString("[ Review ]")); break;
+        case EContext::Loot: ContextSensitiveText->SetText(FText::FromString("[ Loot ]")); break;
         case EContext::None: ContextButton->SetVisibility(ESlateVisibility::Collapsed);
     }
 
